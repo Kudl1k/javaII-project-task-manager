@@ -1,6 +1,7 @@
 package cz.kudladev.taskmanager.controller;
 
 
+import cz.kudladev.taskmanager.model.Task;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,9 +17,16 @@ public class TaskController {
         return "displaying a task with id " + id;
     }
 
+    @PostMapping("/tasks")
+    public String saveTask(@RequestBody Task task) {
+        return "Saving a task details " + task;
+    }
+
     @DeleteMapping("/tasks")
     public String deleteTask(@RequestParam("id") Long id) {
         return "deleting a task with id " + id;
     }
+
+
 
 }
