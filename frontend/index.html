@@ -10,10 +10,95 @@
     <title>Task Manager</title>
 </head>
 <body>
-<ion-content>
-    <h1>Hello World</h1>
+    <ion-tabs>
+        <ion-tab tab="users">
+            <ion-nav id="users-nav"></ion-nav>
+            <div id="users-page">
+                <ion-header translucent="true">
+                    <ion-toolbar>
+                        <ion-title>Users</ion-title>
 
-</ion-content>
+                        <ion-buttons slot="end">
+                            <ion-button fill="clear">
+                              <ion-icon slot="icon-only" name="add"></ion-icon>
+                            </ion-button>
+                        </ion-buttons>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content fullscreen="true" >
+                    <ion-header collapse="condense">
+                        <ion-toolbar>
+                            <ion-title size="large">Users</ion-title>
+                        </ion-toolbar>
+                    </ion-header>
+
+                    <ion-card>
+                        <ion-card-header>
+                            <ion-card-subtitle>email</ion-card-subtitle>
+                            <ion-card-title>User Name</ion-card-title>
+                        </ion-card-header>
+                    </ion-card>
+
+
+
+                </ion-content>
+            </div>
+        </ion-tab>
+        <ion-tab tab="projects">
+            <ion-nav id="projects-nav"></ion-nav>
+            <div id="projects-page">
+                <ion-header translucent="true">
+                    <ion-toolbar>
+                        <ion-title>Projects</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+        
+                <ion-content fullscreen="true">
+                    <ion-header collapse="condense">
+                        <ion-toolbar>
+                            <ion-title size="large">Projects</ion-title>
+                        </ion-toolbar>
+                    </ion-header>
+
+                
+                </ion-content>
+            </div>
+        </ion-tab>
+        <ion-tab tab="tasks">
+            <ion-nav id="tasks-nav"></ion-nav>
+                <div id="tasks-page">
+                <ion-header translucent="true">
+                    <ion-toolbar>
+                        <ion-title>Tasks</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+          
+                <ion-content fullscreen="true">
+                    <ion-header collapse="condense">
+                        <ion-toolbar>
+                            <ion-title size="large">Tasks</ion-title>
+                        </ion-toolbar>
+                    </ion-header>
+                    
+                    
+                </ion-content>
+                </div>
+        </ion-tab>
+        <ion-tab-bar slot="bottom">
+            <ion-tab-button tab="users">
+                <ion-icon name="people-outline"></ion-icon>
+                Users
+            </ion-tab-button>
+            <ion-tab-button tab="projects">
+                <ion-icon name="list-outline"></ion-icon>
+                Projects
+            </ion-tab-button>
+            <ion-tab-button tab="tasks">
+                <ion-icon name="pencil-outline"></ion-icon>
+                Tasks
+            </ion-tab-button>
+            </ion-tab-bar>
+      </ion-tabs>
 <script src="./scripts.js"></script>
 </body>
 </html>
