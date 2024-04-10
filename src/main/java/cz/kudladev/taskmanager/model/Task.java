@@ -3,6 +3,7 @@ package cz.kudladev.taskmanager.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -17,7 +18,7 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "task_id")
     private Long id;
 
     @Column(name = "name")
@@ -32,5 +33,13 @@ public class Task {
     @Column(name = "progress")
     private char progress;
 
+    @NonNull
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
+    @NonNull
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 }
