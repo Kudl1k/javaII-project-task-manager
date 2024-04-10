@@ -19,7 +19,7 @@
                         <ion-title>Users</ion-title>
 
                         <ion-buttons slot="end">
-                            <ion-button fill="clear">
+                            <ion-button id="add_user_button" fill="clear">
                               <ion-icon slot="icon-only" name="add"></ion-icon>
                             </ion-button>
                         </ion-buttons>
@@ -39,8 +39,30 @@
                         </ion-card-header>
                     </ion-card>
 
-
-
+                    <ion-modal id="add_modal" trigger="add_user_button">
+                        <ion-header>
+                            <ion-toolbar>
+                                <ion-buttons slot="start">
+                                    <ion-button onclick="cancel()">Cancel</ion-button>
+                                </ion-buttons>
+                                <ion-title>Welcome</ion-title>
+                                <ion-buttons slot="end">
+                                    <ion-button onclick="addUser()" strong="true">Add user</ion-button>
+                                </ion-buttons>
+                            </ion-toolbar>
+                        </ion-header>
+                        <ion-content class="ion-padding">
+                            <ion-item>
+                                <ion-input id="user_add_input_name" label="Enter your name" label-placement="stacked" type="text" placeholder="Your name"></ion-input>
+                            </ion-item>
+                            <ion-item>
+                                <ion-input id="user_add_input_surname" label="Enter your surname" label-placement="stacked" type="text" placeholder="Your surname"></ion-input>
+                            </ion-item>
+                            <ion-item>
+                                <ion-input id="user_add_input_email" label="Enter your email" label-placement="stacked" type="text" placeholder="Your email"></ion-input>
+                            </ion-item>
+                        </ion-content>
+                      </ion-modal>
                 </ion-content>
             </div>
         </ion-tab>
@@ -100,5 +122,6 @@
             </ion-tab-bar>
       </ion-tabs>
 <script src="./scripts.js"></script>
+<ion-toast-controller></ion-toast-controller>
 </body>
 </html>
