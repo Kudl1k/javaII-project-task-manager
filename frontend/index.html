@@ -10,6 +10,12 @@
     <title>Task Manager</title>
 </head>
 <body>
+      <div id="add_modal"></div>
+
+    <div id="edit_modal"></div>
+
+
+
     <ion-tabs>
         <ion-tab tab="users">
             <ion-nav id="users-nav"></ion-nav>
@@ -32,37 +38,11 @@
                         </ion-toolbar>
                     </ion-header>
 
-                    <ion-card>
-                        <ion-card-header>
-                            <ion-card-subtitle>email</ion-card-subtitle>
-                            <ion-card-title>User Name</ion-card-title>
-                        </ion-card-header>
-                    </ion-card>
+                    <div id="usersContainer"></div>
+                    
+                    
 
-                    <ion-modal id="add_modal" trigger="add_user_button">
-                        <ion-header>
-                            <ion-toolbar>
-                                <ion-buttons slot="start">
-                                    <ion-button onclick="cancel()">Cancel</ion-button>
-                                </ion-buttons>
-                                <ion-title>Welcome</ion-title>
-                                <ion-buttons slot="end">
-                                    <ion-button onclick="addUser()" strong="true">Add user</ion-button>
-                                </ion-buttons>
-                            </ion-toolbar>
-                        </ion-header>
-                        <ion-content class="ion-padding">
-                            <ion-item>
-                                <ion-input id="user_add_input_name" label="Enter your name" label-placement="stacked" type="text" placeholder="Your name"></ion-input>
-                            </ion-item>
-                            <ion-item>
-                                <ion-input id="user_add_input_surname" label="Enter your surname" label-placement="stacked" type="text" placeholder="Your surname"></ion-input>
-                            </ion-item>
-                            <ion-item>
-                                <ion-input id="user_add_input_email" label="Enter your email" label-placement="stacked" type="text" placeholder="Your email"></ion-input>
-                            </ion-item>
-                        </ion-content>
-                      </ion-modal>
+
                 </ion-content>
             </div>
         </ion-tab>
