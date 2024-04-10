@@ -1,6 +1,7 @@
 package cz.kudladev.taskmanager.model;
 
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NonNull;
@@ -14,6 +15,7 @@ import java.sql.Date;
 @ToString
 @Entity
 @Table(name = "task")
+@JsonPropertyOrder({"id", "date", "project", "user", "name", "description", "progress"})
 public class Task {
 
     @Id
