@@ -23,12 +23,15 @@ public class Project {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "description")
-    private String description;
-
-
-    @OneToMany
-    @JoinColumn(name = "task_id")
+    @OneToMany(mappedBy = "project")
     private List<Task> tasks;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_project",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> users;
 
 }

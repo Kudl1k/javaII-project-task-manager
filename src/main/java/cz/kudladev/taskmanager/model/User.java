@@ -33,4 +33,7 @@ public class User {
     @JoinColumn(name = "task_id")
     private List<Task> tasks;
 
+    @ManyToMany(mappedBy = "users")
+    private List<Project> projects;
+
 }
