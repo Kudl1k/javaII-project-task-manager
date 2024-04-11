@@ -260,15 +260,17 @@ function editUser() {
 }
 
 let addProjectModal;
+let selectedUsers = [];
 function createAddProjectModal() {
     const modalContainer = document.getElementById('add_project_modal');
     modalContainer.innerHTML = ''
     let usersHTML = '';
     users.forEach(user => {
+        const isSelected = selectedUsers.includes(user.id);
         usersHTML += `
             <ion-item>
                 <ion-label>${user.name} ${user.surname}</ion-label>
-                <ion-button onclick="addUserToProject(${user.id})">Add</ion-button>
+                <ion-button onclick="addUserToProject(${user.id})">${isSelected ? 'Remove' : 'Add'}</ion-button>
             </ion-item>
         `;
     });
@@ -282,7 +284,7 @@ function createAddProjectModal() {
                 </ion-buttons>
                 <ion-title>Create new project</ion-title>
                 <ion-buttons slot="end">
-                    <ion-button onclick="addUser()" strong="true">Add project</ion-button>
+                    <ion-button onclick="addProject()" strong="true">Add project</ion-button>
                 </ion-buttons>
             </ion-toolbar>
         </ion-header>
@@ -290,7 +292,9 @@ function createAddProjectModal() {
             <ion-item>
                 <ion-input id="project_add_input_name" label="Enter project name" label-placement="stacked" type="text" placeholder="Project 1"></ion-input>
             </ion-item>
-            ${usersHTML}
+            <div id="project_add_modal_user_list">
+                ${usersHTML}
+            </div>
         </ion-content>
     </ion-modal>
     `;
@@ -299,11 +303,95 @@ function createAddProjectModal() {
     addProjectModal = document.getElementById('add_project_modal_w');
 }
 
+function updateUsersInModal() {
+    const usersContainer = document.getElementById('project_add_modal_user_list');
+    let usersHTML = '';
+    users.forEach(user => {
+        const isSelected = selectedUsers.some(selectedUser => selectedUser.id === user.id);
+        usersHTML += `
+            <ion-item>
+                <ion-label>${user.name} ${user.surname}</ion-label>
+                <ion-button onclick="addUserToProject(${user.id})">${isSelected ? 'Remove' : 'Add'}</ion-button>
+            </ion-item>
+        `;
+    });
+    usersContainer.innerHTML = usersHTML;
+}
+
+function addUserToProject(userId) {
+    const user = users.find(user => user.id === userId);
+    const index = selectedUsers.findIndex(selectedUser => selectedUser.id === userId);
+    if (index > -1) {
+        // User is already selected, remove them from the list
+        selectedUsers.splice(index, 1);
+    } else {
+        // User is not selected, add them to the list
+        selectedUsers.push(user);
+    }
+    console.log(user)
+    // Update the user list in the modal
+    updateUsersInModal();
+}
+
 document.getElementById('add_project_button').addEventListener('click',function(){
     createAddProjectModal()
     addProjectModal.classList.add('active');
     addProjectModal.present()
 })
+
+function addProject() {
+    const projectName = document.getElementById('project_add_input_name').value;
+
+    const data = {
+        name: projectName
+    };
+
+    fetch('http://localhost:8080/projects', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(project => {
+        console.log('Project created:', project);
+        const promises = selectedUsers.map(user => addUserToProjectDB(project.id, user.id));
+        return Promise.all(promises);
+    })
+    .then(() => {
+        fetchProjects(); // Refresh the project list
+        displayProjects();
+        cancel();
+    })
+    .catch(error => {
+        console.error('An error occurred:', error);
+        presentAlert('An error occurred')
+    });
+}
+
+function addUserToProjectDB(projectId, userId) {
+    return fetch(`http://localhost:8080/users/${userId}/projects/${projectId}`, {
+        method: 'POST'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('User added to project:', data);
+    })
+    .catch(error => {
+        console.error('An error occurred:', error);
+    });
+}
 
 fetchUsers()
 fetchProjects()
