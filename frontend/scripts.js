@@ -20,14 +20,15 @@ function fetchUsers() {
     });
 }
 
+let selectedUserId;
+
 function displayUsers() {
     const container = document.getElementById('usersContainer');
     container.innerHTML = '';
 
     users.forEach(user => {
         const card = document.createElement('ion-card');
-        card.id = 'user-card';
-        card.type = 'button';
+        card.dataset.userId = user.id; // Store the user ID in a data attribute
 
         const cardHeader = document.createElement('ion-card-header');
 
@@ -44,21 +45,26 @@ function displayUsers() {
 
         // Add a click event to the card
         card.addEventListener('click', function() {
-            selectedUserId = user.id; // Store the selected user's ID
+            console.log(`Card clicked: ${this.dataset.userId}`); // Log the ID of the clicked user
+            selectedUserId = Number(this.dataset.userId); // Convert the user ID to a number
+            const user = users.find(user => user.id === selectedUserId);
+            const modal = document.querySelector('ion-modal');
+            modal.present(); // Open the modal
+            console.log(user)
             populateEditModal(user); // Populate the edit modal with the selected user's data
-            document.getElementById('edit_modal').classList.add('active'); // Open the edit modal
         });
 
         // Add the card to the container
         container.appendChild(card);
     });
-    createEditModal()
 }
 
 function populateEditModal(user) {
-    document.getElementById('user_edit_input_name').value = user.name;
-    document.getElementById('user_edit_input_surname').value = user.surname;
-    document.getElementById('user_edit_input_email').value = user.email;
+    // Populate the edit modal with the selected user's data
+    document.getElementById('user_add_input_name').value = user.name
+    document.getElementById('user_add_input_email').value = user.email
+    // Continue for all fields in your modal
+    
 }
 
 
@@ -66,7 +72,7 @@ function createEditModal() {
     const modalContainer = document.getElementById('edit_modal');
 
     const modalHTML = `
-        <ion-modal id="edit_modal">
+        <ion-modal id="edit_modal" trigger="user-card">
             <ion-header>
                 <ion-toolbar>
                     <ion-buttons slot="start">
@@ -133,7 +139,7 @@ function createAddModal() {
 }
 
 
-
+createEditModal()
 fetchUsers()
 createAddModal()
 
@@ -143,7 +149,7 @@ function cancel() {
     addModal.dismiss(null, 'cancel');
 }
 function openModal() {
-    document.getElementById('add_modal').classList.add('active');
+    addModal.classList.add('active');
 }
 
 
