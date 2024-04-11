@@ -1,5 +1,6 @@
 package cz.kudladev.taskmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -42,6 +43,7 @@ public class User {
     private List<Task> tasks;
 
     @ManyToMany(mappedBy = "users")
+    @JsonIgnore
     private List<Project> projects;
 
 }

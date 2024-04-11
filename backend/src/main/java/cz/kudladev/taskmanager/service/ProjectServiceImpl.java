@@ -44,4 +44,13 @@ public class ProjectServiceImpl implements ProjectService{
     public void deleteProject(long id) {
         projectRepository.deleteById(id);
     }
+
+    @Override
+    public List<Project> getProjectsWithUsers() {
+        List<Project> projects = projectRepository.findAll();
+        projects.forEach(project -> {
+            project.getUsers().size(); // This will trigger the lazy loading of users
+        });
+        return projects;
+    }
 }

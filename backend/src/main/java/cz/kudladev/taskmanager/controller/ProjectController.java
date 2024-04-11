@@ -18,7 +18,7 @@ public class ProjectController {
 
     @GetMapping("/projects")
     public List<Project> getAllProjects() {
-        return projectService.getAllProjects();
+        return projectService.getProjectsWithUsers();
     }
 
     @GetMapping("/projects/{id}")
@@ -36,6 +36,8 @@ public class ProjectController {
         project.setId(id);
         return projectService.updateProject(project);
     }
+
+
 
     @DeleteMapping("/projects/{id}")
     public void deleteProject(@PathVariable long id) {
