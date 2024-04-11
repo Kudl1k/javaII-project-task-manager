@@ -36,7 +36,7 @@ function displayUsers() {
         cardSubtitle.textContent = user.email;
 
         const cardTitle = document.createElement('ion-card-title');
-        cardTitle.textContent = user.name;
+        cardTitle.textContent = user.name + " " + user.surname;
 
         cardHeader.appendChild(cardSubtitle);
         cardHeader.appendChild(cardTitle);
@@ -48,10 +48,11 @@ function displayUsers() {
             console.log(`Card clicked: ${this.dataset.userId}`); // Log the ID of the clicked user
             selectedUserId = Number(this.dataset.userId); // Convert the user ID to a number
             const user = users.find(user => user.id === selectedUserId);
-            const modal = document.querySelector('ion-modal');
-            modal.present(); // Open the modal
+            editModal.classList.add('active');
+            console.log(editModal)
             console.log(user)
             populateEditModal(user); // Populate the edit modal with the selected user's data
+            editModal.present()
         });
 
         // Add the card to the container
@@ -60,19 +61,17 @@ function displayUsers() {
 }
 
 function populateEditModal(user) {
-    // Populate the edit modal with the selected user's data
-    document.getElementById('user_add_input_name').value = user.name
-    document.getElementById('user_add_input_email').value = user.email
-    // Continue for all fields in your modal
-    
+    document.getElementById('user_edit_input_name').value = user.name
+    document.getElementById('user_edit_input_surname').value = user.surname
+    document.getElementById('user_edit_input_email').value = user.email    
 }
 
-
+let editModal;
 function createEditModal() {
     const modalContainer = document.getElementById('edit_modal');
 
     const modalHTML = `
-        <ion-modal id="edit_modal" trigger="user-card">
+        <ion-modal id="edit_modal_w" trigger="user-card">
             <ion-header>
                 <ion-toolbar>
                     <ion-buttons slot="start">
@@ -99,7 +98,7 @@ function createEditModal() {
     `;
 
     modalContainer.innerHTML = modalHTML;
-    const modal = document.getElementById('edit_modal');
+    editModal = document.getElementById('edit_modal_w');
 }
 
 let addModal;
@@ -147,9 +146,10 @@ createAddModal()
 
 function cancel() {
     addModal.dismiss(null, 'cancel');
+    editModal.dismiss(null,'cancel');
 }
 function openModal() {
-    addModal.classList.add('active');
+    addModal.present()
 }
 
 
@@ -198,6 +198,8 @@ function addUser() {
         document.getElementById('user_add_input_surname').value = "";
         document.getElementById('user_add_input_email').value = "";
         cancel()
+        fetchUsers()
+        displayUsers()
         console.log('here')
     })
     .catch(error => {
@@ -206,6 +208,37 @@ function addUser() {
     });
 }
 
-function editUser(){
-    
+function editUser() {
+    var name = document.getElementById('user_edit_input_name').value;
+    var surname = document.getElementById('user_edit_input_surname').value;
+    var email = document.getElementById('user_edit_input_email').value;
+
+    var data = {
+        name: name,
+        surname: surname,
+        email: email
+    };
+
+    fetch(`http://localhost:8080/users/${selectedUserId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('User updated:', data);
+        fetchUsers(); // Refresh the user list
+        displayUsers()
+        cancel()
+    })
+    .catch(error => {
+        presentAlert('An error occurred');
+    });
 }
