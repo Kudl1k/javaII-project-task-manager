@@ -10,11 +10,10 @@
     <title>Task Manager</title>
 </head>
 <body>
-      <div id="add_modal"></div>
-
-    <div id="edit_modal"></div>
-
-
+    <div id="add_user_modal"></div>
+    <div id="edit_user_modal"></div>
+    <div id="add_project_modal"></div>
+    <div id="edit_project_modal"></div>
 
     <ion-tabs>
         <ion-tab tab="users">
@@ -39,9 +38,6 @@
                     </ion-header>
 
                     <div id="usersContainer"></div>
-                    
-                    
-
 
                 </ion-content>
             </div>
@@ -52,6 +48,11 @@
                 <ion-header translucent="true">
                     <ion-toolbar>
                         <ion-title>Projects</ion-title>
+                        <ion-buttons slot="end">
+                            <ion-button id="add_project_button" fill="clear">
+                              <ion-icon slot="icon-only" name="add"></ion-icon>
+                            </ion-button>
+                        </ion-buttons>
                     </ion-toolbar>
                 </ion-header>
         
@@ -62,6 +63,7 @@
                         </ion-toolbar>
                     </ion-header>
 
+                    <div id="projectsContainer"></div>
                 
                 </ion-content>
             </div>

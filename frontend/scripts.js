@@ -1,6 +1,6 @@
 
 let users = [];
-
+let projects = [];
 
 function fetchUsers() {
     fetch('http://localhost:8080/users')
@@ -14,6 +14,24 @@ function fetchUsers() {
         users = []
         users = data;
         displayUsers()
+    })
+    .catch(error => {
+        console.error('An error occurred:', error);
+    });
+}
+
+function fetchProjects() {
+    fetch('http://localhost:8080/projects')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        projects = []
+        projects = data;
+        displayProjects()
     })
     .catch(error => {
         console.error('An error occurred:', error);
@@ -48,15 +66,25 @@ function displayUsers() {
             console.log(`Card clicked: ${this.dataset.userId}`); // Log the ID of the clicked user
             selectedUserId = Number(this.dataset.userId); // Convert the user ID to a number
             const user = users.find(user => user.id === selectedUserId);
-            editModal.classList.add('active');
-            console.log(editModal)
+            editUserModal.classList.add('active');
+            console.log(editUserModal)
             console.log(user)
             populateEditModal(user); // Populate the edit modal with the selected user's data
-            editModal.present()
+            editUserModal.present()
         });
 
         // Add the card to the container
         container.appendChild(card);
+    });
+}
+
+function displayProjects() {
+    const container = document.getElementById('projectsContainer');
+    container.innerHTML = '';
+
+    projects.forEach(project => {
+        const card = document.createElement('ion-card');
+        // Add your code here to display the project details in the card
     });
 }
 
@@ -66,12 +94,13 @@ function populateEditModal(user) {
     document.getElementById('user_edit_input_email').value = user.email    
 }
 
-let editModal;
-function createEditModal() {
-    const modalContainer = document.getElementById('edit_modal');
+let editUserModal;
+
+function createEditUserModal() {
+    const modalContainer = document.getElementById('edit_user_modal');
 
     const modalHTML = `
-        <ion-modal id="edit_modal_w" trigger="user-card">
+        <ion-modal id="edit_user_modal_w" trigger="user-card">
             <ion-header>
                 <ion-toolbar>
                     <ion-buttons slot="start">
@@ -85,34 +114,34 @@ function createEditModal() {
             </ion-header>
             <ion-content class="ion-padding">
                 <ion-item>
-                    <ion-input id="user_edit_input_name" label="Enter your name" label-placement="stacked" type="text" placeholder="Your name"></ion-input>
+                    <ion-input id="user_edit_input_name" label="Enter user name" label-placement="stacked" type="text" placeholder="Your name"></ion-input>
                 </ion-item>
                 <ion-item>
-                    <ion-input id="user_edit_input_surname" label="Enter your surname" label-placement="stacked" type="text" placeholder="Your surname"></ion-input>
+                    <ion-input id="user_edit_input_surname" label="Enter user surname" label-placement="stacked" type="text" placeholder="Your surname"></ion-input>
                 </ion-item>
                 <ion-item>
-                    <ion-input id="user_edit_input_email" label="Enter your email" label-placement="stacked" type="text" placeholder="Your email"></ion-input>
+                    <ion-input id="user_edit_input_email" label="Enter user email" label-placement="stacked" type="text" placeholder="Your email"></ion-input>
                 </ion-item>
             </ion-content>
         </ion-modal>
     `;
 
     modalContainer.innerHTML = modalHTML;
-    editModal = document.getElementById('edit_modal_w');
+    editUserModal = document.getElementById('edit_user_modal_w');
 }
 
-let addModal;
-function createAddModal() {
-    const modalContainer = document.getElementById('add_modal');
+let addUserModal;
+function createAddUserModal() {
+    const modalContainer = document.getElementById('add_user_modal');
 
     const modalHTML = `
-        <ion-modal id="add_modal" trigger="add_user_button">
+        <ion-modal id="add_user_modal_w" trigger="add_user_button">
         <ion-header>
             <ion-toolbar>
                 <ion-buttons slot="start">
                     <ion-button onclick="cancel()">Cancel</ion-button>
                 </ion-buttons>
-                <ion-title>Welcome</ion-title>
+                <ion-title>Creare new user</ion-title>
                 <ion-buttons slot="end">
                     <ion-button onclick="addUser()" strong="true">Add user</ion-button>
                 </ion-buttons>
@@ -120,13 +149,13 @@ function createAddModal() {
         </ion-header>
         <ion-content class="ion-padding">
             <ion-item>
-                <ion-input id="user_add_input_name" label="Enter your name" label-placement="stacked" type="text" placeholder="Your name"></ion-input>
+                <ion-input id="user_add_input_name" label="Enter user name" label-placement="stacked" type="text" placeholder="Jan"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-input id="user_add_input_surname" label="Enter your surname" label-placement="stacked" type="text" placeholder="Your surname"></ion-input>
+                <ion-input id="user_add_input_surname" label="Enter user surname" label-placement="stacked" type="text" placeholder="Novak"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-input id="user_add_input_email" label="Enter your email" label-placement="stacked" type="text" placeholder="Your email"></ion-input>
+                <ion-input id="user_add_input_email" label="Enter user email" label-placement="stacked" type="text" placeholder="nov1234@vsb.cz"></ion-input>
             </ion-item>
         </ion-content>
     </ion-modal>
@@ -134,25 +163,14 @@ function createAddModal() {
     `;
 
     modalContainer.innerHTML = modalHTML;
-    addModal = document.querySelector('ion-modal');
+    addUserModal = document.getElementById('add_user_modal_w');
 }
-
-
-createEditModal()
-fetchUsers()
-createAddModal()
-
-
 
 function cancel() {
-    addModal.dismiss(null, 'cancel');
-    editModal.dismiss(null,'cancel');
+    addUserModal.dismiss(null, 'cancel');
+    editUserModal.dismiss(null,'cancel');
+    addProjectModal.dismiss(null, 'cancel');
 }
-function openModal() {
-    addModal.present()
-}
-
-
 
 async function presentAlert(message) {
     const alert = document.createElement('ion-alert');
@@ -163,8 +181,6 @@ async function presentAlert(message) {
     document.body.appendChild(alert);
     await alert.present();
 }
-
-
 
 function addUser() {
 
@@ -242,3 +258,55 @@ function editUser() {
         presentAlert('An error occurred');
     });
 }
+
+let addProjectModal;
+function createAddProjectModal() {
+    const modalContainer = document.getElementById('add_project_modal');
+    modalContainer.innerHTML = ''
+    let usersHTML = '';
+    users.forEach(user => {
+        usersHTML += `
+            <ion-item>
+                <ion-label>${user.name} ${user.surname}</ion-label>
+                <ion-button onclick="addUserToProject(${user.id})">Add</ion-button>
+            </ion-item>
+        `;
+    });
+
+    const modalHTML = `
+        <ion-modal id="add_project_modal_w" trigger="add_project_button">
+        <ion-header>
+            <ion-toolbar>
+                <ion-buttons slot="start">
+                    <ion-button onclick="cancel()">Cancel</ion-button>
+                </ion-buttons>
+                <ion-title>Create new project</ion-title>
+                <ion-buttons slot="end">
+                    <ion-button onclick="addUser()" strong="true">Add project</ion-button>
+                </ion-buttons>
+            </ion-toolbar>
+        </ion-header>
+        <ion-content id="project_add_modal_content" class="ion-padding">
+            <ion-item>
+                <ion-input id="project_add_input_name" label="Enter project name" label-placement="stacked" type="text" placeholder="Project 1"></ion-input>
+            </ion-item>
+            ${usersHTML}
+        </ion-content>
+    </ion-modal>
+    `;
+
+    modalContainer.innerHTML = modalHTML;
+    addProjectModal = document.getElementById('add_project_modal_w');
+}
+
+document.getElementById('add_project_button').addEventListener('click',function(){
+    createAddProjectModal()
+    addProjectModal.classList.add('active');
+    addProjectModal.present()
+})
+
+fetchUsers()
+fetchProjects()
+createEditUserModal()
+createAddUserModal()
+createAddProjectModal()
