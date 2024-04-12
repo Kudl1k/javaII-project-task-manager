@@ -15,12 +15,6 @@ public class TaskManagerConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(3600);
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5500") // Add the origin of your frontend application
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(3600);
     }
 
 }

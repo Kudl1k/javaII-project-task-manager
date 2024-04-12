@@ -11,5 +11,5 @@ public interface ProjectService {
     Project addProject(Project project);
     Project updateProject(Project project);
     void deleteProject(long id);
-    List<Project> getProjectsWithUsers();
+    List<Project> getProjectsWithUsersAndTask();
 }

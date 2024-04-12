@@ -46,11 +46,7 @@ public class ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public List<Project> getProjectsWithUsers() {
-        List<Project> projects = projectRepository.findAll();
-        projects.forEach(project -> {
-            project.getUsers().size(); // This will trigger the lazy loading of users
-        });
-        return projects;
+    public List<Project> getProjectsWithUsersAndTask() {
+        return projectRepository.findAllWithUsersAndTasks();
     }
 }

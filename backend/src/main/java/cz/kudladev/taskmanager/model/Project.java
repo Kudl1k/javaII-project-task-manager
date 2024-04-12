@@ -31,13 +31,12 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private List<Task> tasks;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_project",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    @JsonIgnore
     private List<User> users;
 
 }
