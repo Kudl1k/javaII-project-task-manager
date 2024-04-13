@@ -143,7 +143,7 @@ function displayTasks() {
         const cardHeader = document.createElement('ion-card-header');
 
         const cardSubtitle = document.createElement('ion-card-subtitle');
-        cardSubtitle.textContent = `This task is for project ${task.project.name}`;
+        cardSubtitle.textContent = `${task.description} (${task.project.name})`;
 
         const cardTitle = document.createElement('ion-card-title');
         cardTitle.textContent = task.name;
@@ -158,7 +158,11 @@ function displayTasks() {
             const task = tasks.find(task => task.id === selectedTaskId);
             editTaskModal.classList.add('active');
             populateEditTaskModal(task); // Populate the edit modal with the selected user's data
-            editTaskModal.present()
+            editTaskModal.addEventListener('ionModalDidPresent', () => {
+                let date = new Date(task.date);
+                document.getElementById('task_edit_input_date').value = date.toISOString().slice(0,10);
+            });
+            editTaskModal.present();
         });
 
         // Add the card to the container
@@ -182,16 +186,20 @@ function populateEditProjectModal(project) {
 function populateEditTaskModal(task) {
     document.getElementById('task_edit_input_name').value = task.name;
     document.getElementById('task_edit_input_description').value = task.description;
-    document.getElementById('task_edit_input_date').value = task.date;
+    let date = new Date(task.date);
+    document.getElementById('task_edit_input_date').value = date.toISOString().slice(0,10);
+    console.log(date)
+    console.log(document.getElementById('task_edit_input_date').value)
     console.log(task)
-    selectedTaskUserId = task.user.id;
     selectedTaskProjectId = task.project.id;
+    selectedTaskUserId = task.user.id;
 
     const projectListContainer = document.getElementById('task_edit_modal_project_list');
     let projectsHTML = '';
     projects.forEach(project => {
         const isSelected = selectedTaskProjectId === project.id;
         if (isSelected){
+            selectedTaskProjectId = project.id
             projectsHTML += `
             <ion-item>
                 <ion-label>${project.name}</ion-label>
@@ -218,6 +226,8 @@ function populateEditTaskModal(task) {
         }
         
     });
+    console.log(selectedTaskProjectId)
+    console.log(selectedTaskUserId)
     usersContainer.innerHTML = usersHTML;
 }
 
@@ -620,8 +630,8 @@ function editProject() {
 }
 
 let addTaskModal;
-let selectedTaskUserId;
-let selectedTaskProjectId = -1;
+let selectedTaskUserId = -2;
+let selectedTaskProjectId = -2;
 function createAddTaskModal() {
     const modalContainer = document.getElementById('add_task_modal');
     modalContainer.innerHTML = ''
@@ -681,14 +691,17 @@ function createAddTaskModal() {
 
 function addProjectToTask(projectId) {
     const projectListContainer = document.getElementById('task_add_modal_project_list');
+    const editProjectListContainer = document.getElementById('task_edit_modal_project_list');
     let projectsHTML = '';
     let usersHTML = '';
 
     if (selectedTaskProjectId === projectId) {
         selectedTaskProjectId = null;
         selectedTaskUserId = null;
+        projectsHTML += `<h3>Select project:</h3>`
         projects.forEach(project => {
             const isSelected = selectedTaskProjectId === project.id;
+            
             projectsHTML += `
                 <ion-item>
                     <ion-label>${project.name}</ion-label>
@@ -725,12 +738,17 @@ function addProjectToTask(projectId) {
     // Update the project list in the modal
     
     projectListContainer.innerHTML = projectsHTML;
+    editProjectListContainer.innerHTML = projectsHTML.slice();
     const usersContainer = document.getElementById('task_add_modal_user_list');
+    const editUserContainer = document.getElementById('task_edit_modal_user_list');
     usersContainer.innerHTML = usersHTML;
+    editUserContainer.innerHTML = usersHTML.slice();
+    console.log(projectsHTML)
 }
 
 function addUserToTask(userId) {
     const usersContainer = document.getElementById('task_add_modal_user_list');
+    const editUserContainer = document.getElementById('task_edit_modal_user_list');
     let usersHTML = '';
 
     if (selectedTaskUserId === userId) {
@@ -764,6 +782,7 @@ function addUserToTask(userId) {
         });
     }
     usersContainer.innerHTML = usersHTML;
+    editUserContainer.innerHTML = usersHTML;
 }
 
 function addTask(){
@@ -849,16 +868,57 @@ function createEditTaskModal() {
                 </ng-template>
                 </ion-modal>
                 </ion-item>
-                <div id="task_edit_modal_user_list">
-                </div>
-                <div id="task_edit_modal_project_list">
-                </div>
+                <div id="task_edit_modal_project_list"></div>
+                <div id="task_edit_modal_user_list"></div>
             </ion-content>
         </ion-modal>
     `;
 
     modalContainer.innerHTML = modalHTML;
     editTaskModal = document.getElementById('edit_task_modal_w');
+}
+
+function editTask() {
+    const name = document.getElementById('task_edit_input_name').value;
+    const description = document.getElementById('task_edit_input_description').value;
+    const date = new Date(document.getElementById('task_edit_input_date').value);
+    const formattedDate = date.toISOString().slice(0,10);
+
+    const data = {
+        name: name,
+        description: description,
+        date: formattedDate,
+        progress: "P",
+        user: {
+            id: selectedTaskUserId
+        },
+        project: {
+            id: selectedTaskProjectId
+        }
+    };
+
+    fetch(`http://localhost:8080/tasks/${selectedTaskId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(() => {
+        fetchTasks(); // Refresh the task list
+        displayTasks();
+        cancel();
+    })
+    .catch(error => {
+        console.error('An error occurred:', error);
+        presentAlert('An error occurred')
+    });
 }
 
 fetchUsers()
