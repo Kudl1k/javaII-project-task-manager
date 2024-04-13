@@ -40,6 +40,7 @@ public class User {
     private String Email;
 
     @OneToMany
+    @JsonIgnore
     @JoinColumn(name = "task_id")
     private List<Task> tasks;
 

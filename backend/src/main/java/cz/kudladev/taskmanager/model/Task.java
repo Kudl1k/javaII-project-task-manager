@@ -1,9 +1,7 @@
 package cz.kudladev.taskmanager.model;
 
-
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -25,19 +23,19 @@ public class Task {
     private Long id;
 
     @Column(name = "name")
-    @NotBlank
+    @NonNull
     private String name;
 
     @Column(name = "description")
-    @NotBlank
+    @NonNull
     private String description;
 
     @Column(name = "date")
-    @NotBlank
+    @NonNull
     private Date date;
 
     @Column(name = "progress")
-    @NotBlank
+    @NonNull
     private char progress;
 
     @NonNull
